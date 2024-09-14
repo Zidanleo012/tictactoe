@@ -36,18 +36,37 @@ const gameBoard = (function () {
         }
     };
 
+    var resetBoard = function () {
+        for(let i = 0; i < 3; i++) {
+
+        }
+    }
+
     return {
         getBoard,
         setBoard,
         switchPlayer,
-        getPlayer
+        getPlayer,
+        resetBoard
     }
 })();
+
+function checkTie() {
+    [row1, row2, row3] = gameBoard.getBoard();
+    if (!row1.includes(undefined) || !row2.includes(undefined) || !row3.includes(undefined)) {
+        console.log('Its a tie!!!')
+    }
+}
+
+function gameOverAndRestart() {
+
+}
 
 function playRound(row, column) {
     gameBoard.setBoard(row, column)
     decideWinner(gameBoard.getPlayer('player1'));
     decideWinner(gameBoard.getPlayer('player2'));
+    checkTie()
     console.log(gameBoard.getBoard());
 }
 
