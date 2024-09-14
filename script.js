@@ -8,14 +8,14 @@ function Player(name, marker, newName) {
 }
 
 const gameBoard = (function () {
-    const board = []
+    const board = [
+        ['x', undefined, undefined],
+        [undefined, 'o', undefined],
+        [undefined, undefined, 'x']
+    ]
     var player1 = new Player('Zidan', 'x');
     var player2 = new Player('Andri', 'o');
     var currPlayer = player1;
-
-    for (let i = 0; i < 3; i++) {
-        board.push(new Array(3))
-    }
 
     var switchPlayer = () => {
         currPlayer === player1 ? currPlayer = player2 : currPlayer = player1;
@@ -37,8 +37,10 @@ const gameBoard = (function () {
     };
 
     var resetBoard = function () {
-        for(let i = 0; i < 3; i++) {
-
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                board[i][j] = undefined;
+            }
         }
     }
 
@@ -53,8 +55,9 @@ const gameBoard = (function () {
 
 function checkTie() {
     [row1, row2, row3] = gameBoard.getBoard();
-    if (!row1.includes(undefined) || !row2.includes(undefined) || !row3.includes(undefined)) {
+    if (!row1.includes(undefined) && !row2.includes(undefined) && !row3.includes(undefined)) {
         console.log('Its a tie!!!')
+        gameBoard.resetBoard()
     }
 }
 
@@ -67,6 +70,7 @@ function playRound(row, column) {
     decideWinner(gameBoard.getPlayer('player1'));
     decideWinner(gameBoard.getPlayer('player2'));
     checkTie()
+    displayController.renderBoard()
     console.log(gameBoard.getBoard());
 }
 
@@ -84,6 +88,33 @@ function decideWinner(player) {
             && board[one[0]][one[1]] === player.marker
             && board[two[0]][two[1]] === player.marker) {
             alert(`${player.name} win!!!`);
+            gameBoard.resetBoard();
         }
     })
 }
+
+const displayController = (function () {
+    var cells = document.querySelectorAll('.cell')
+    // var flatBoardArr = gameBoard.getBoard().flat()
+
+    var renderBoard = function () {
+        cells.forEach((cell, index) => {
+            cell.textContent = gameBoard.getBoard().flat()[index];
+        })
+    }
+    renderBoard()
+
+    var addCellEvent = (function () {
+        cells.forEach(cell => {
+            cell.addEventListener('click', (e) => {
+                [zero, one] = e.target.id
+                playRound(zero, one)
+            })
+        })
+    })();
+
+    return {
+        renderBoard
+    }
+})();
+// window.addEventListener('DOMContentLoaded', displayController, false)
