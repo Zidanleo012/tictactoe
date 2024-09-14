@@ -1,6 +1,10 @@
-function Player(name, marker) {
+function Player(name, marker, newName) {
     this.name = name,
-        this.marker = marker
+        this.marker = marker,
+
+        this.setName = function () {
+            this.name = newName
+        }
 }
 
 const gameBoard = (function () {
@@ -13,6 +17,15 @@ const gameBoard = (function () {
         board.push(new Array(3))
     }
 
+    var switchPlayer = () => {
+        currPlayer === player1 ? currPlayer = player2 : currPlayer = player1;
+        console.log(currPlayer)
+    }
+
+    var getPlayer = function (player) {
+        return player === 'player1' ? player1 : player2
+    }
+
     var getBoard = () => board;
     var setBoard = (row, column) => {
         if (board[row][column]) {
@@ -23,38 +36,35 @@ const gameBoard = (function () {
         }
     };
 
-    var switchPlayer = () => {
-        currPlayer === player1 ? currPlayer = player2 : currPlayer = player1;
-        console.log(currPlayer)
-    }
-
     return {
         getBoard,
-        setBoard
+        setBoard,
+        switchPlayer,
+        getPlayer
     }
 })();
 
 function playRound(row, column) {
     gameBoard.setBoard(row, column)
-    decideWinner()
-    console.log(gameBoard.getBoard())
+    decideWinner(gameBoard.getPlayer('player1'));
+    decideWinner(gameBoard.getPlayer('player2'));
+    console.log(gameBoard.getBoard());
 }
 
-const winCon = ['012', '000', '111', '222'];
+function decideWinner(player) {
+    const winCon = [
+        ['00', '01', '02'], ['10', '11', '12'], ['20', '21', '22'], // row
+        ['00', '10', '20'], ['01', '11', '21'], ['02', '12', '22'], // column
+        ['00', '11', '22'], ['02', '11', '20']                      // diagonal
+    ]
 
-function decideWinner() {
-    var board = gameBoard.getBoard()
+    const board = gameBoard.getBoard()
     winCon.forEach(item => {
-        [one, two, three] = item;
-        while(i < 3) {
-            if(board[i][0] === 'x' && board[i][1] === 'x' && board[i][2] === 'x') {
-
-            }
-            i++
+        [zero, one, two] = item;
+        if (board[zero[0]][zero[1]] === player.marker
+            && board[one[0]][one[1]] === player.marker
+            && board[two[0]][two[1]] === player.marker) {
+            alert(`${player.name} win!!!`);
         }
-        // if(board[0][0] === 'x' && board[0][1] === 'x' && board[0][2] === 'x') {
-        //     alert('winn!!!')
-        // }
-        console.log()
     })
 }
