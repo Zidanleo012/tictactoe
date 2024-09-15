@@ -1,26 +1,27 @@
 function Player(name, marker, newName) {
     this.name = name,
-        this.marker = marker,
-
-        this.setName = function () {
-            this.name = newName
-        }
+        this.marker = marker
 }
 
 const gameBoard = (function () {
-    const board = [
-        ['x', undefined, undefined],
-        [undefined, 'o', undefined],
-        [undefined, undefined, 'x']
-    ]
-    var player1 = new Player('Zidan', 'x');
-    var player2 = new Player('Andri', 'o');
+    var player1 = new Player('Player 1', 'x');
+    var player2 = new Player('Player 2', 'o');
     var currPlayer = player1;
+    const board = [
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined],
+        [undefined, undefined, undefined]
+    ]
 
-    var switchPlayer = () => {
-        currPlayer === player1 ? currPlayer = player2 : currPlayer = player1;
+    var switchPlayer = (bool) => {
+        if (bool) {
+            currPlayer === player1 ? currPlayer = player2 : currPlayer = player1;
+            displayController.statusDisplay('switch player', currPlayer.name);
+        }
         console.log(currPlayer)
     }
+
+    var getCurrPlayer = () => currPlayer;
 
     var getPlayer = function (player) {
         return player === 'player1' ? player1 : player2
@@ -32,7 +33,7 @@ const gameBoard = (function () {
             alert('Choose the empty cell!');
         } else {
             board[row][column] = currPlayer.marker;
-            switchPlayer();
+            switchPlayer(true);
         }
     };
 
@@ -42,6 +43,8 @@ const gameBoard = (function () {
                 board[i][j] = undefined;
             }
         }
+
+        currPlayer = player1
     }
 
     return {
@@ -49,29 +52,16 @@ const gameBoard = (function () {
         setBoard,
         switchPlayer,
         getPlayer,
-        resetBoard
+        resetBoard,
+        getCurrPlayer
     }
 })();
 
 function checkTie() {
     [row1, row2, row3] = gameBoard.getBoard();
     if (!row1.includes(undefined) && !row2.includes(undefined) && !row3.includes(undefined)) {
-        console.log('Its a tie!!!')
-        gameBoard.resetBoard()
+        displayController.statusDisplay('tie')
     }
-}
-
-function gameOverAndRestart() {
-
-}
-
-function playRound(row, column) {
-    gameBoard.setBoard(row, column)
-    decideWinner(gameBoard.getPlayer('player1'));
-    decideWinner(gameBoard.getPlayer('player2'));
-    checkTie()
-    displayController.renderBoard()
-    console.log(gameBoard.getBoard());
 }
 
 function decideWinner(player) {
@@ -87,15 +77,18 @@ function decideWinner(player) {
         if (board[zero[0]][zero[1]] === player.marker
             && board[one[0]][one[1]] === player.marker
             && board[two[0]][two[1]] === player.marker) {
-            alert(`${player.name} win!!!`);
+            displayController.statusDisplay('win', gameBoard.getCurrPlayer().name)
             gameBoard.resetBoard();
         }
     })
 }
 
 const displayController = (function () {
-    var cells = document.querySelectorAll('.cell')
-    // var flatBoardArr = gameBoard.getBoard().flat()
+    var cells = document.querySelectorAll('.cell');
+    var reset = document.querySelector('.reset');
+    var status = document.querySelector('.status-display')
+    var changeName = document.querySelector('.change-name')
+    var initvalue = status.textContent
 
     var renderBoard = function () {
         cells.forEach((cell, index) => {
@@ -103,6 +96,26 @@ const displayController = (function () {
         })
     }
     renderBoard()
+
+    var statusDisplay = function (condition, playerName) {
+        if (condition === 'switch player') {
+            status.textContent = `It's ${playerName}'s turn now`
+        } else if (condition === 'reset') {
+            status.textContent = initvalue
+        } else if (condition === 'win') {
+            status.textContent = `${playerName} WIN!!!`
+        } else if (condition === 'tie') {
+            status.textContent = 'It\'s a tie!'
+        }
+    }
+
+    reset.addEventListener('click', (e) => {
+        gameBoard.resetBoard();
+        cells.forEach(cell => {
+            cell.textContent = '';
+        })
+        statusDisplay('reset')
+    })
 
     var addCellEvent = (function () {
         cells.forEach(cell => {
@@ -114,7 +127,15 @@ const displayController = (function () {
     })();
 
     return {
-        renderBoard
+        renderBoard,
+        statusDisplay
     }
 })();
-// window.addEventListener('DOMContentLoaded', displayController, false)
+
+function playRound(row, column) {
+    gameBoard.setBoard(row, column)
+    decideWinner(gameBoard.getPlayer('player1'));
+    decideWinner(gameBoard.getPlayer('player2'));
+    checkTie()
+    displayController.renderBoard()
+}

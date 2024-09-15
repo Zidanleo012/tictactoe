@@ -6,7 +6,11 @@
 
 h1 {
     text-align: center;
-    margin-top: 5vh;
+    margin-top: 2vh;
+}
+
+.status-display {
+    text-align: center;
 }
 
 .wrapper {
@@ -15,6 +19,13 @@ h1 {
     border: 1px solid black;
     margin: 0 auto;
     background-color: aqua;
+}
+
+.status-display {
+    font-size: 1.3rem;
+    height: 40px;
+    width: 300px;
+    margin: 0 auto;
 }
 
 .container {
@@ -38,11 +49,18 @@ h1 {
 .playerDisplay {
     display: flex;
     justify-content: space-around;
+    font-weight: 600;
+    font-size: 1.2rem;
 }
 
 .reset,
-.changeName {
+.change-name {
     /* display: block; */
     width: 100px;
     height: 70px;
+}
+
+.player-marker {
+    font-size: 3.5rem;
+    text-align: center;
 }

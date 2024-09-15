@@ -12,6 +12,7 @@
 <body>
     <div class="wrapper">
         <h1>Tic Tac Toe</h1>
+        <p class="status-display">Hello, welcome to the game!!!<br>Let player 1 play first</p>
         <div class="container">
             <div class="cell" id="00"></div>
             <div class="cell" id="01"></div>
@@ -24,12 +25,18 @@
             <div class="cell" id="22"></div>
         </div>
         <div class="playerDisplay">
-            <div class="playerDisplay">player1</div>
+            <div>
+                <div class="playerDisplay">player1</div>
+                <p class="player-marker">X</p>
+            </div>
             <div class="button-wrapper">
                 <button class="reset">Reset</button>
-                <button class="changeName">Change Name</button>
+                <button class="change-name">Change Name</button>
             </div>
-            <div class="playerDisplay">player2</div>
+            <div>
+                <div class="playerDisplay">player2</div>
+                <p class="player-marker">O</p>
+            </div>
         </div>
     </div>
 </body>
